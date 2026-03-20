@@ -3,10 +3,842 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibe for Dummies</title>
+    <title>Vibecoding voor Michiel — Een beginnersgids</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --warm-bg: #FFF8F0;
+            --warm-cream: #FFF1E0;
+            --warm-peach: #FFD6A5;
+            --warm-orange: #FF9A3C;
+            --warm-deep: #E86A33;
+            --warm-brown: #5C3D2E;
+            --warm-dark: #2D1B0E;
+            --accent-teal: #2EC4B6;
+            --accent-teal-light: #CBF3F0;
+            --code-bg: #1E1E2E;
+            --code-text: #CDD6F4;
+            --code-green: #A6E3A1;
+            --code-blue: #89B4FA;
+            --code-yellow: #F9E2AF;
+            --section-gap: 6rem;
+            --max-w: 800px;
+        }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--warm-bg);
+            color: var(--warm-dark);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        h1, h2, h3 { font-family: 'Outfit', system-ui, sans-serif; line-height: 1.2; }
+
+        /* ---- STICKY HEADER ---- */
+        .site-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(255,248,240,.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(232,106,51,.12);
+            transition: box-shadow .3s;
+        }
+        .site-header.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+
+        .header-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: .7rem 1.5rem;
+        }
+
+        .header-logo {
+            font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.15rem;
+            color: var(--warm-deep);
+            text-decoration: none;
+        }
+        .header-logo span { color: var(--accent-teal); }
+
+        .header-nav { display: flex; gap: .15rem; }
+        .header-nav a {
+            display: flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; border-radius: 50%;
+            font-size: .75rem; font-weight: 600; color: var(--warm-brown);
+            text-decoration: none; transition: all .2s;
+            background: transparent;
+        }
+        .header-nav a:hover { background: var(--warm-peach); color: var(--warm-dark); }
+        .header-nav a.active { background: var(--warm-deep); color: #fff; }
+
+        /* ---- PROGRESS BAR ---- */
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px; z-index: 101;
+            background: linear-gradient(90deg, var(--warm-orange), var(--accent-teal));
+            width: 0%; transition: width .15s;
+        }
+
+        /* ---- HERO ---- */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 6rem 1.5rem 4rem;
+            background: linear-gradient(165deg, var(--warm-bg) 0%, var(--warm-cream) 50%, var(--accent-teal-light) 100%);
+        }
+        .hero-inner { max-width: 700px; }
+        .hero h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); color: var(--warm-dark); margin-bottom: 1rem; }
+        .hero h1 em { font-style: normal; color: var(--warm-deep); }
+        .hero .subtitle { font-size: 1.25rem; color: var(--warm-brown); margin-bottom: .5rem; }
+        .hero .personal { font-size: 1.1rem; color: var(--accent-teal); font-weight: 600; margin-bottom: 2rem; }
+        .hero .cta {
+            display: inline-block; padding: .9rem 2.2rem; border-radius: 50px;
+            background: var(--warm-deep); color: #fff; text-decoration: none;
+            font-weight: 600; font-size: 1.05rem; transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 15px rgba(232,106,51,.35);
+        }
+        .hero .cta:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(232,106,51,.45); }
+
+        /* ---- SECTIONS ---- */
+        .section {
+            max-width: var(--max-w); margin: 0 auto;
+            padding: var(--section-gap) 1.5rem 2rem;
+        }
+
+        .section-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--warm-deep); color: #fff;
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section h2 {
+            font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--warm-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .section h3 {
+            font-size: 1.2rem; color: var(--warm-deep); margin: 2rem 0 .75rem;
+        }
+
+        .section p { margin-bottom: 1rem; }
+
+        .section ul, .section ol {
+            margin: .75rem 0 1.25rem 1.5rem;
+        }
+        .section li { margin-bottom: .5rem; }
+
+        .divider {
+            max-width: var(--max-w); margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--warm-peach), transparent);
+        }
+
+        /* ---- HIGHLIGHT BOX ---- */
+        .highlight {
+            background: var(--warm-cream); border-left: 4px solid var(--warm-orange);
+            border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .highlight.teal {
+            background: var(--accent-teal-light); border-left-color: var(--accent-teal);
+        }
+        .highlight strong { color: var(--warm-deep); }
+        .highlight.teal strong { color: #0e8a7e; }
+
+        /* ---- CODE BLOCKS ---- */
+        .code-block {
+            position: relative; background: var(--code-bg); border-radius: 12px;
+            margin: 1.25rem 0; overflow: hidden;
+        }
+        .code-block-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: .6rem 1rem; background: rgba(255,255,255,.05);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            font-size: .8rem; color: #888;
+        }
+        .code-block pre {
+            padding: 1rem 1.25rem; margin: 0; overflow-x: auto;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: .9rem; line-height: 1.6; color: var(--code-text);
+        }
+        .code-block .prompt { color: var(--code-green); }
+        .code-block .cmd { color: var(--code-blue); }
+        .code-block .output { color: #888; }
+        .code-block .highlight-line { color: var(--code-yellow); }
+
+        .copy-btn {
+            background: rgba(255,255,255,.1); border: none; color: #aaa;
+            padding: .3rem .7rem; border-radius: 6px; cursor: pointer;
+            font-size: .75rem; transition: all .2s;
+        }
+        .copy-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
+        .copy-btn.copied { color: var(--code-green); }
+
+        /* ---- OS TABS ---- */
+        .os-tabs {
+            display: flex; gap: .5rem; margin: 1.25rem 0 .5rem;
+        }
+        .os-tab {
+            padding: .45rem 1.2rem; border-radius: 8px 8px 0 0;
+            border: 1px solid rgba(232,106,51,.2); border-bottom: none;
+            background: var(--warm-bg); color: var(--warm-brown);
+            cursor: pointer; font-size: .9rem; font-weight: 500;
+            transition: all .2s;
+        }
+        .os-tab.active { background: var(--code-bg); color: #fff; border-color: var(--code-bg); }
+        .os-content { display: none; }
+        .os-content.active { display: block; }
+
+        /* ---- STEP CARDS ---- */
+        .step-card {
+            background: #fff; border-radius: 16px; padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+            border: 1px solid rgba(232,106,51,.08);
+        }
+        .step-card h3 { margin-top: 0; }
+
+        /* ---- PERMISSION TABLE ---- */
+        .perm-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .perm-card {
+            background: #fff; border-radius: 12px; padding: 1rem 1.25rem;
+            border: 1px solid rgba(0,0,0,.06);
+        }
+        .perm-card .perm-name {
+            font-weight: 700; font-size: 1rem; margin-bottom: .3rem;
+        }
+        .perm-card .perm-desc { font-size: .9rem; color: #666; }
+        .perm-card.green { border-left: 4px solid #22c55e; }
+        .perm-card.blue { border-left: 4px solid #3b82f6; }
+        .perm-card.red { border-left: 4px solid #ef4444; }
+        .perm-card.orange { border-left: 4px solid var(--warm-orange); }
+
+        /* ---- CHEATSHEET ---- */
+        .cheatsheet {
+            background: linear-gradient(135deg, #fff 0%, var(--accent-teal-light) 100%);
+            border: 2px solid var(--accent-teal);
+            border-radius: 20px; padding: 2.5rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 30px rgba(46,196,182,.15);
+        }
+        .cheatsheet h3 { color: #0e8a7e; }
+
+        .cheat-columns {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .cheat-col h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem; margin-bottom: .75rem;
+            color: var(--warm-dark);
+        }
+
+        .cheat-item {
+            background: rgba(255,255,255,.7); border-radius: 10px;
+            padding: .75rem 1rem; margin-bottom: .5rem;
+            font-size: .92rem;
+        }
+        .cheat-item code {
+            background: var(--code-bg); color: var(--code-green);
+            padding: .15rem .45rem; border-radius: 4px; font-size: .82rem;
+        }
+
+        .handy-phrases {
+            background: rgba(255,255,255,.6); border-radius: 14px;
+            padding: 1.25rem 1.5rem; margin-top: 1.5rem;
+        }
+        .handy-phrases h4 {
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: .75rem; color: var(--warm-dark);
+        }
+        .phrase {
+            display: inline-block; background: var(--code-bg); color: var(--code-yellow);
+            padding: .3rem .8rem; border-radius: 6px; margin: .25rem .3rem .25rem 0;
+            font-size: .85rem; font-family: 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        .troubleshoot {
+            background: rgba(255,255,255,.5); border-radius: 12px;
+            padding: 1.25rem 1.5rem; margin-top: 1.5rem;
+        }
+        .troubleshoot h4 { font-family: 'Outfit', sans-serif; margin-bottom: .5rem; }
+
+        /* ---- FOOTER ---- */
+        .site-footer {
+            text-align: center; padding: 3rem 1.5rem;
+            color: var(--warm-brown); font-size: .9rem;
+            border-top: 1px solid rgba(232,106,51,.12);
+        }
+        .site-footer strong { color: var(--warm-deep); }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 640px) {
+            .perm-grid { grid-template-columns: 1fr; }
+            .cheat-columns { grid-template-columns: 1fr; }
+            .header-nav a { width: 28px; height: 28px; font-size: .7rem; }
+            .section { padding: 3.5rem 1.25rem 1.5rem; }
+            :root { --section-gap: 3.5rem; }
+        }
+
+        /* ---- INLINE CODE ---- */
+        p code, li code {
+            background: rgba(232,106,51,.1); color: var(--warm-deep);
+            padding: .15rem .4rem; border-radius: 4px;
+            font-size: .88em; font-family: 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        /* ---- ANIMATIONS ---- */
+        .fade-in {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ---- PRINT STYLES ---- */
+        @media print {
+            .site-header, .progress-bar, .hero .cta { display: none; }
+            .hero { min-height: auto; padding: 2rem 0; }
+            .fade-in { opacity: 1; transform: none; }
+            .section { padding: 2rem 0; }
+            body { font-size: 12pt; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Vibe for Dummies</h1>
-    <p>Coming soon.</p>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Header -->
+<header class="site-header" id="siteHeader">
+    <div class="header-inner">
+        <a href="#top" class="header-logo">vibe<span>coding</span></a>
+        <nav class="header-nav" id="headerNav">
+            <a href="#sectie-1" data-section="1">1</a>
+            <a href="#sectie-2" data-section="2">2</a>
+            <a href="#sectie-3" data-section="3">3</a>
+            <a href="#sectie-4" data-section="4">4</a>
+            <a href="#sectie-5" data-section="5">5</a>
+            <a href="#sectie-6" data-section="6">6</a>
+            <a href="#sectie-7" data-section="7">7</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero -->
+<div class="hero" id="top">
+    <div class="hero-inner fade-in">
+        <h1>Welkom in de wereld van <em>vibecoding</em></h1>
+        <p class="subtitle">Van idee naar werkende website &mdash; zonder ook maar &eacute;&eacute;n regel code te kennen.</p>
+        <p class="personal">Speciaal voor jou, Michiel.</p>
+        <a href="#sectie-1" class="cta">Laten we beginnen &darr;</a>
+    </div>
+</div>
+
+<!-- ==================== SECTIE 1 ==================== -->
+<section class="section fade-in" id="sectie-1">
+    <div class="section-number">1</div>
+    <h2>Wat is vibecoding?</h2>
+
+    <p>Stel je voor: jij beschrijft in gewone, alledaagse taal wat je wilt maken &mdash; en een AI (Claude) schrijft alle code voor je. <strong>Jij bent de regisseur, Claude is de programmeur.</strong> Dat is vibecoding in een notendop.</p>
+
+    <h3>Waarom dit een gamechanger is</h3>
+    <p>Je hebt <strong>geen programmeerkennis nodig</strong>. Helemaal niks. Wat je w&eacute;l nodig hebt: een idee en de vaardigheid om dat helder te beschrijven. Kun je uitleggen wat je wilt aan een collega? Dan kun je vibecoden.</p>
+
+    <h3>Superpowers: jouw geheime wapen</h3>
+    <p>Superpowers zijn een gestructureerde manier om met Claude te werken. In plaats van zomaar wat te vragen, werk je in drie stappen:</p>
+    <ol>
+        <li><strong>Brainstormen</strong> &mdash; Wat wil ik eigenlijk? Claude helpt je jouw vage idee scherp te maken.</li>
+        <li><strong>Plannen</strong> &mdash; Hoe gaan we het bouwen? Claude maakt een blauwdruk.</li>
+        <li><strong>Bouwen</strong> &mdash; Claude schrijft de code, jij kijkt mee en stuurt bij.</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>Denk eraan als een architect:</strong> eerst schets je op een bierviltje, dan maak je een bouwtekening, en d&aacute;n ga je pas bouwen. Superpowers zorgen ervoor dat je die stappen niet overslaat.
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== SECTIE 2 ==================== -->
+<section class="section fade-in" id="sectie-2">
+    <div class="section-number">2</div>
+    <h2>Wat heb je nodig? (Setup)</h2>
+
+    <p>Voordat we aan de slag gaan, moeten we een paar dingen installeren. Geen paniek, Michiel &mdash; ik loop elke stap met je door!</p>
+
+    <!-- Stap 1 -->
+    <div class="step-card">
+        <h3>Stap 1: Claude Code installeren</h3>
+        <p>Ga naar de offici&euml;le downloadpagina van Claude Code en installeer het programma. Na installatie heb je ook een klein tegoed nodig (<em>tokens</em>) om Claude te laten werken.</p>
+
+        <div class="highlight teal">
+            <strong>Tip:</strong> Start met het kleinste bundeltje. Als je enthousiast wordt (en dat ga je worden!) kun je later altijd upgraden naar een groter pakket.
+        </div>
+
+        <div class="os-tabs" data-group="stap1">
+            <button class="os-tab active" data-os="win">Windows</button>
+            <button class="os-tab" data-os="mac">Mac</button>
+        </div>
+        <div class="os-content active" data-group="stap1" data-os="win">
+            <div class="code-block">
+                <div class="code-block-header"><span>PowerShell (als Administrator)</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+                <pre><span class="prompt">&gt;</span> <span class="cmd">winget install Anthropic.Claude</span>
+<span class="output">Installatie gelukt!</span></pre>
+            </div>
+            <p>Of download het installatieprogramma van <strong>claude.ai/download</strong> en dubbelklik erop.</p>
+        </div>
+        <div class="os-content" data-group="stap1" data-os="mac">
+            <div class="code-block">
+                <div class="code-block-header"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+                <pre><span class="prompt">$</span> <span class="cmd">brew install claude</span>
+<span class="output">Claude Code is ge&#239;nstalleerd!</span></pre>
+            </div>
+            <p>Geen Homebrew? Download het installatieprogramma van <strong>claude.ai/download</strong>.</p>
+        </div>
+    </div>
+
+    <!-- Stap 2 -->
+    <div class="step-card">
+        <h3>Stap 2: GitHub account aanmaken</h3>
+        <p>Ga naar <strong>github.com</strong> en maak een gratis account aan. GitHub is waar je code opslaat &eacute;n waar je site straks live gaat &mdash; zichtbaar voor de hele wereld!</p>
+        <p>Onthoud je gebruikersnaam en wachtwoord goed. Die heb je later nodig.</p>
+    </div>
+
+    <!-- Stap 3 -->
+    <div class="step-card">
+        <h3>Stap 3: Een werkmap aanmaken</h3>
+        <p>Dit wordt de plek waar je alles neerzet: foto's, teksten, inspiratieplaatjes. Claude &ldquo;ziet&rdquo; alles wat in deze map staat en kan het gebruiken.</p>
+
+        <div class="os-tabs" data-group="stap3">
+            <button class="os-tab active" data-os="win">Windows</button>
+            <button class="os-tab" data-os="mac">Mac</button>
+        </div>
+        <div class="os-content active" data-group="stap3" data-os="win">
+            <div class="code-block">
+                <div class="code-block-header"><span>PowerShell</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+                <pre><span class="prompt">&gt;</span> <span class="cmd">mkdir C:\mijn-project</span>
+<span class="output">Directory: C:\mijn-project aangemaakt</span></pre>
+            </div>
+            <p>Of maak gewoon een nieuwe map aan via Verkenner. Waar je wilt, bijvoorbeeld op je bureaublad.</p>
+        </div>
+        <div class="os-content" data-group="stap3" data-os="mac">
+            <div class="code-block">
+                <div class="code-block-header"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+                <pre><span class="prompt">$</span> <span class="cmd">mkdir ~/mijn-project</span></pre>
+            </div>
+            <p>Of maak een nieuwe map aan via Finder.</p>
+        </div>
+
+        <div class="highlight">
+            <strong>Pro-tip:</strong> Zet alvast wat materiaal in je werkmap! Een paar foto's, een Word-document met teksten, een Excel &mdash; alles wat je wilt gebruiken. Claude kan het allemaal zien en ermee werken.
+        </div>
+    </div>
+
+    <!-- Stap 4 -->
+    <div class="step-card">
+        <h3>Stap 4: Claude Code starten</h3>
+        <p>Nu wordt het spannend! Open een terminal, navigeer naar je werkmap, en start Claude.</p>
+
+        <div class="os-tabs" data-group="stap4">
+            <button class="os-tab active" data-os="win">Windows</button>
+            <button class="os-tab" data-os="mac">Mac</button>
+        </div>
+        <div class="os-content active" data-group="stap4" data-os="win">
+            <div class="code-block">
+                <div class="code-block-header"><span>PowerShell</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+                <pre><span class="prompt">&gt;</span> <span class="cmd">cd C:\mijn-project</span>
+<span class="prompt">&gt;</span> <span class="cmd">claude</span>
+<span class="output">
+  Claude Code v1.x
+  Welkom! Ik ben klaar om je te helpen.
+  Typ je vraag of opdracht...</span></pre>
+            </div>
+        </div>
+        <div class="os-content" data-group="stap4" data-os="mac">
+            <div class="code-block">
+                <div class="code-block-header"><span>Terminal</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+                <pre><span class="prompt">$</span> <span class="cmd">cd ~/mijn-project</span>
+<span class="prompt">$</span> <span class="cmd">claude</span>
+<span class="output">
+  Claude Code v1.x
+  Welkom! Ik ben klaar om je te helpen.
+  Typ je vraag of opdracht...</span></pre>
+            </div>
+        </div>
+
+        <p>Je ziet nu een prompt waar je kunt typen. <strong>Dit is het!</strong> Je bent klaar om te vibecoden.</p>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== SECTIE 3 ==================== -->
+<section class="section fade-in" id="sectie-3">
+    <div class="section-number">3</div>
+    <h2>Je eerste gesprek met Claude</h2>
+
+    <p>Claude werkt als een gesprek &mdash; je typt gewoon in het Nederlands wat je wilt, en Claude antwoordt. Geen speciale commando's, geen ingewikkelde syntax. Gewoon praten.</p>
+
+    <h3>Je allereerste opdracht</h3>
+    <p>Laten we simpel beginnen. Typ dit:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude Code</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="highlight-line">Maak een HTML-pagina met de tekst Hallo Wereld</span></pre>
+    </div>
+
+    <p>Claude gaat nu code schrijven en slaat het op als een bestand in je werkmap. Je zult iets zien als:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude's reactie</span></div>
+        <pre><span class="output">Ik maak een HTML-pagina voor je aan...</span>
+
+<span class="code-green">&#10003; Bestand aangemaakt: index.html</span>
+
+<span class="output">Je kunt het bekijken door index.html te openen
+in je browser (dubbelklik op het bestand).</span></pre>
+    </div>
+
+    <p><strong>Dat is het!</strong> Open het bestand in je browser en je ziet je eerste webpagina. Michiel, je bent officieel een vibecoder!</p>
+
+    <h3>Referentiemateriaal gebruiken</h3>
+    <p>Heb je bestanden in je werkmap gezet? Claude kan ze gebruiken! Zeg bijvoorbeeld:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude Code</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="highlight-line">Gebruik de foto's in mijn map om een fotogalerij te maken</span></pre>
+    </div>
+
+    <h3>Permissions: Claude vraagt toestemming</h3>
+    <p>Claude vraagt soms of hij iets mag doen (een bestand aanmaken, iets installeren). Dit zijn je opties:</p>
+
+    <div class="perm-grid">
+        <div class="perm-card green">
+            <div class="perm-name">Allow</div>
+            <div class="perm-desc">Ja, doe het. Eenmalige toestemming voor deze actie.</div>
+        </div>
+        <div class="perm-card blue">
+            <div class="perm-name">Allow always</div>
+            <div class="perm-desc">Ja, en vraag het niet meer voor dit soort acties.</div>
+        </div>
+        <div class="perm-card red">
+            <div class="perm-name">Deny</div>
+            <div class="perm-desc">Nee, doe dit niet.</div>
+        </div>
+        <div class="perm-card orange">
+            <div class="perm-name">Dangerous mode</div>
+            <div class="perm-desc">Claude doet alles zonder te vragen. Handig, maar let op: Claude kan dan ook bestanden verwijderen of overschrijven!</div>
+        </div>
+    </div>
+
+    <div class="highlight">
+        <strong>Advies voor beginners:</strong> Gebruik gewoon &ldquo;Allow&rdquo; in het begin. Dan zie je precies wat Claude doet en leer je het proces kennen. Later, als je meer vertrouwen hebt, kun je &ldquo;Allow always&rdquo; gebruiken voor de dingen die je vertrouwt.
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== SECTIE 4 ==================== -->
+<section class="section fade-in" id="sectie-4">
+    <div class="section-number">4</div>
+    <h2>Superpowers &mdash; Brainstormen met Claude</h2>
+
+    <p>Dit is de kern van deze handleiding, Michiel. <strong>Superpowers</strong> zijn slimme werkwijzen die Claude extra gestructureerd laten werken. In plaats van zomaar code te laten schrijven, laat je Claude eerst meedenken over je idee.</p>
+
+    <h3>De brainstorm starten</h3>
+    <p>Typ het volgende, gevolgd door je idee in gewone taal:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude Code</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="highlight-line">/superpowers:brainstorming</span>
+<span class="highlight-line">Ik wil een website maken waarop ik mijn favoriete recepten kan delen</span></pre>
+    </div>
+
+    <h3>Hoe het werkt</h3>
+    <p>Claude gaat nu iets slims doen: in plaats van meteen code te schrijven, stelt Claude vragen. <strong>E&eacute;n voor &eacute;&eacute;n.</strong> Vaak meerkeuze, zodat je makkelijk kunt kiezen.</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude's brainstorm-vragen (voorbeeld)</span></div>
+        <pre><span class="output">Leuk idee! Laten we het uitwerken.
+
+Wat voor soort recepten wil je delen?
+  a) Alle soorten door elkaar
+  b) Een specifieke keuken (Italiaans, Aziatisch, etc.)
+  c) Een specifiek thema (budget, snel klaar, vegetarisch)
+
+</span><span class="prompt">&gt;</span> <span class="highlight-line">a</span>
+
+<span class="output">
+Wil je dat bezoekers ook recepten kunnen toevoegen,
+of ben jij de enige die recepten plaatst?
+  a) Alleen ik
+  b) Bezoekers mogen ook recepten toevoegen
+
+</span><span class="prompt">&gt;</span> <span class="highlight-line">a</span>
+
+<span class="output">
+Heb je al foto's van je gerechten?
+  a) Ja, die staan in mijn werkmap
+  b) Nee, gebruik placeholder-afbeeldingen
+
+</span><span class="prompt">&gt;</span> <span class="highlight-line">a, ze staan in de map foto's</span></pre>
+    </div>
+
+    <p>Jij kiest, Claude denkt mee. Zo bouw je samen een helder beeld van wat je wilt.</p>
+
+    <div class="highlight teal">
+        <strong>Tip:</strong> Heb je referentiemateriaal in je werkmap gezet &mdash; een screenshot van een site die je mooi vindt, een Word-doc met teksten, foto's? Verwijs ernaar! Zeg bijvoorbeeld: <em>&ldquo;Ik heb een screenshot van een site die ik mooi vind in mijn map gezet, gebruik die als inspiratie.&rdquo;</em>
+    </div>
+
+    <h3>Het resultaat: jouw blauwdruk</h3>
+    <p>Na de brainstorm maakt Claude een samenvatting van alle keuzes: het ontwerp, de structuur, de kleuren, alles. Dit wordt opgeslagen als jouw <strong>blauwdruk</strong>.</p>
+    <p>Claude vraagt: <em>&ldquo;Ziet dit er goed uit? Wil je iets aanpassen?&rdquo;</em> Pas het aan totdat je tevreden bent. Dan gaan we bouwen!</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== SECTIE 5 ==================== -->
+<section class="section fade-in" id="sectie-5">
+    <div class="section-number">5</div>
+    <h2>Van plan naar werkende site (en meer)</h2>
+
+    <p>Na de brainstorm gaat het snel. Claude maakt automatisch een bouwplan en gaat stap voor stap aan de slag.</p>
+
+    <h3>Claude bouwt, jij kijkt mee</h3>
+    <p>Je ziet bestanden verschijnen in je werkmap. Claude vertelt je precies wat hij doet:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude aan het werk</span></div>
+        <pre><span class="code-green">&#10003; Bestand aangemaakt: index.html</span>
+<span class="code-green">&#10003; Bestand aangemaakt: style.css</span>
+<span class="code-green">&#10003; Afbeeldingen verwerkt: 6 foto's geoptimaliseerd</span>
+<span class="code-green">&#10003; Recept-pagina's aangemaakt: 12 recepten</span>
+
+<span class="output">Je site is klaar! Open index.html in je browser
+om het resultaat te bekijken.</span></pre>
+    </div>
+
+    <h3>Tussendoor bekijken</h3>
+    <p>Open <code>index.html</code> in je browser (dubbelklik op het bestand). Niet helemaal wat je in gedachten had? Geen probleem!</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Aanpassingen vragen</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="highlight-line">De kleuren zijn te donker, maak het wat vrolijker</span>
+<span class="prompt">&gt;</span> <span class="highlight-line">Kun je de foto's groter maken?</span>
+<span class="prompt">&gt;</span> <span class="highlight-line">Voeg een zoekbalk toe bovenaan</span></pre>
+    </div>
+
+    <p><strong>Aanpassen is normaal.</strong> Vibecoding is een dialoog &mdash; je bouwt samen met Claude, net zo lang tot het goed is.</p>
+
+    <h3>Meer dan alleen websites!</h3>
+    <p>Claude kan veel meer dan websites bouwen. Alles wat in je werkmap staat, kan Claude ermee werken:</p>
+
+    <ul>
+        <li><strong>Een Excel analyseren</strong> &mdash; <em>&ldquo;Analyseer de verkoopcijfers in mijn Excel en maak er grafieken van&rdquo;</em></li>
+        <li><strong>Een PowerPoint maken</strong> &mdash; <em>&ldquo;Maak een presentatie van 10 slides over dit onderwerp&rdquo;</em></li>
+        <li><strong>Een rapport samenvatten</strong> &mdash; <em>&ldquo;Vat dit PDF-rapport samen in 5 kernpunten&rdquo;</em></li>
+        <li><strong>Data omzetten</strong> &mdash; <em>&ldquo;Zet deze CSV om naar een overzichtelijke tabel&rdquo;</em></li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Onthoud:</strong> Alles wat in je werkmap staat, kan Claude zien en gebruiken. Zet er dus alles in wat je nodig hebt!
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== SECTIE 6 ==================== -->
+<section class="section fade-in" id="sectie-6">
+    <div class="section-number">6</div>
+    <h2>Live zetten op GitHub Pages</h2>
+
+    <p>Je hebt een werkende site. Maar nu wil je hem delen met de wereld! Dat kan gratis via <strong>GitHub Pages</strong>.</p>
+
+    <h3>Wat is GitHub Pages?</h3>
+    <p>Een gratis dienst van GitHub waarmee je een website online zet. Je krijgt een adres zoals:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Jouw website-adres</span></div>
+        <pre><span class="highlight-line">michielkamma.github.io/mijn-recepten</span></pre>
+    </div>
+
+    <p>Dat adres kun je delen met iedereen &mdash; familie, vrienden, collega's.</p>
+
+    <h3>Claude doet het werk</h3>
+    <p>Het mooie? Je hoeft niet te weten hoe GitHub werkt. Zeg gewoon:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude Code</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="highlight-line">Zet dit live op GitHub Pages</span></pre>
+    </div>
+
+    <p>Claude regelt alles:</p>
+    <ol>
+        <li>Claude vraagt <strong>eenmalig</strong> om in te loggen bij GitHub (via je browser)</li>
+        <li>Claude maakt een repository aan (een soort online map)</li>
+        <li>Claude uploadt je bestanden</li>
+        <li>Claude activeert GitHub Pages</li>
+    </ol>
+
+    <p><strong>Binnen een paar minuten staat je site live!</strong> Claude geeft je de link.</p>
+
+    <h3>Later aanpassen?</h3>
+    <p>Start Claude opnieuw in dezelfde werkmap en zeg wat je wilt wijzigen. Claude past het aan en zet de nieuwe versie online.</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Aanpassing doorvoeren</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="cmd">cd C:\mijn-project</span>   <span class="output">(of ~/mijn-project op Mac)</span>
+<span class="prompt">&gt;</span> <span class="cmd">claude</span>
+<span class="prompt">&gt;</span> <span class="highlight-line">Voeg een nieuw recept toe voor pasta carbonara</span>
+<span class="prompt">&gt;</span> <span class="highlight-line">Zet de update live op GitHub Pages</span></pre>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ==================== SECTIE 7 ==================== -->
+<section class="section fade-in" id="sectie-7">
+    <div class="section-number">7</div>
+    <h2>En nu zelf &mdash; Cheatsheet</h2>
+
+    <p>Je weet nu alles wat je nodig hebt, Michiel! Hier is je spiekbriefje voor als je aan de slag gaat:</p>
+
+    <div class="cheatsheet">
+        <div class="cheat-columns">
+            <div class="cheat-col">
+                <h4>Eenmalig (heb je al gedaan)</h4>
+                <div class="cheat-item">Claude Code ge&iuml;nstalleerd + tokens gekocht</div>
+                <div class="cheat-item">GitHub account aangemaakt</div>
+            </div>
+            <div class="cheat-col">
+                <h4>Elk nieuw project</h4>
+                <div class="cheat-item"><strong>1.</strong> Map aanmaken met je materiaal</div>
+                <div class="cheat-item"><strong>2.</strong> Terminal openen, naar de map, <code>claude</code> typen</div>
+                <div class="cheat-item"><strong>3.</strong> <code>/superpowers:brainstorming</code> + je idee</div>
+                <div class="cheat-item"><strong>4.</strong> Vragen beantwoorden, ontwerp goedkeuren, laten bouwen</div>
+                <div class="cheat-item"><strong>5.</strong> <code>"Zet het live op GitHub Pages"</code></div>
+            </div>
+        </div>
+
+        <div class="handy-phrases">
+            <h4>Handige zinnen voor Claude</h4>
+            <span class="phrase">"Gebruik de bestanden in mijn map"</span>
+            <span class="phrase">"Ik wil het anders, kun je..."</span>
+            <span class="phrase">"Maak er een PowerPoint van"</span>
+            <span class="phrase">"Analyseer deze Excel"</span>
+            <span class="phrase">"Zet dit live op GitHub Pages"</span>
+            <span class="phrase">"Maak de kleuren wat warmer"</span>
+            <span class="phrase">"Voeg een zoekfunctie toe"</span>
+        </div>
+
+        <div class="troubleshoot">
+            <h4>Problemen?</h4>
+            <ul>
+                <li><strong>Claude doet niks?</strong> Check of je in de juiste map staat. Typ <code>pwd</code> (Mac) of <code>cd</code> (Windows) om te zien waar je bent.</li>
+                <li><strong>Iets mislukt?</strong> Gewoon zeggen wat er fout ging. Claude probeert het opnieuw. Vibecoding is proberen, bijsturen, verbeteren.</li>
+                <li><strong>Tokens op?</strong> Koop een nieuw bundeltje via je Claude-account.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="highlight teal" style="text-align:center; font-size:1.1rem; margin-top:2rem;">
+        <strong>Veel plezier met vibecoden, Michiel!</strong><br>
+        Je eerste website is slechts een <code>claude</code>-commando verwijderd.
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <p>Gemaakt met vibecoding door <strong>Ralph Wagter</strong></p>
+</footer>
+
+<script>
+    // ---- PROGRESS BAR ----
+    const progressBar = document.getElementById('progressBar');
+    const header = document.getElementById('siteHeader');
+
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = progress + '%';
+        header.classList.toggle('scrolled', scrollTop > 20);
+    }
+
+    // ---- ACTIVE NAV ----
+    const sections = document.querySelectorAll('.section[id]');
+    const navLinks = document.querySelectorAll('.header-nav a');
+
+    function updateActiveNav() {
+        let current = '';
+        sections.forEach(function(section) {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 150) current = section.id;
+        });
+        navLinks.forEach(function(link) {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+    }
+
+    // ---- FADE IN ----
+    const fadeEls = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) e.target.classList.add('visible');
+        });
+    }, { threshold: 0.15 });
+    fadeEls.forEach(function(el) { observer.observe(el); });
+
+    // ---- OS TABS ----
+    document.querySelectorAll('.os-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            var group = tab.parentElement.dataset.group;
+            var os = tab.dataset.os;
+            tab.parentElement.querySelectorAll('.os-tab').forEach(function(t) {
+                t.classList.remove('active');
+            });
+            tab.classList.add('active');
+            document.querySelectorAll('.os-content[data-group="' + group + '"]').forEach(function(c) {
+                c.classList.toggle('active', c.dataset.os === os);
+            });
+        });
+    });
+
+    // ---- COPY BUTTON ----
+    function copyCode(btn) {
+        var pre = btn.closest('.code-block').querySelector('pre');
+        var text = pre.innerText
+            .replace(/^[>$]\s*/gm, '')
+            .replace(/^(kopieer|Installatie gelukt!|Claude Code is ge.*|.*aangemaakt|.*klaar.*|.*Welkom.*|.*Typ je.*|Directory:.*)/gm, '')
+            .trim();
+        navigator.clipboard.writeText(text).then(function() {
+            btn.textContent = 'gekopieerd!';
+            btn.classList.add('copied');
+            setTimeout(function() {
+                btn.textContent = 'kopieer';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    // ---- SCROLL LISTENERS ----
+    window.addEventListener('scroll', function() {
+        updateProgress();
+        updateActiveNav();
+    }, { passive: true });
+    updateProgress();
+    updateActiveNav();
+</script>
+
 </body>
 </html>
