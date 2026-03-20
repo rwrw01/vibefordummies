@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibecoding voor Michiel — Een beginnersgids</title>
+    <title>Vibecoding — Een beginnersgids</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
@@ -303,9 +303,47 @@
         }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+        /* ---- WELCOME SCREEN ---- */
+        .welcome-screen {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
+            background: linear-gradient(165deg, var(--warm-bg) 0%, var(--warm-cream) 50%, var(--accent-teal-light) 100%);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 2rem;
+            transition: opacity .5s ease, transform .5s ease;
+        }
+        .welcome-screen.hidden {
+            opacity: 0; transform: scale(1.05); pointer-events: none;
+        }
+        .welcome-inner { max-width: 500px; }
+        .welcome-inner h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem); color: var(--warm-dark); margin-bottom: .5rem;
+        }
+        .welcome-inner h1 em { font-style: normal; color: var(--warm-deep); }
+        .welcome-inner p { font-size: 1.1rem; color: var(--warm-brown); margin-bottom: 2rem; }
+        .welcome-inner input {
+            width: 100%; max-width: 320px; padding: .9rem 1.2rem;
+            border: 2px solid var(--warm-peach); border-radius: 12px;
+            font-size: 1.1rem; font-family: 'Inter', sans-serif;
+            text-align: center; outline: none; background: #fff;
+            transition: border-color .2s;
+        }
+        .welcome-inner input:focus { border-color: var(--warm-deep); }
+        .welcome-inner input::placeholder { color: #c4a882; }
+        .welcome-btn {
+            display: inline-block; margin-top: 1.2rem; padding: .9rem 2.5rem;
+            border-radius: 50px; border: none; cursor: pointer;
+            background: var(--warm-deep); color: #fff;
+            font-weight: 600; font-size: 1.05rem; font-family: 'Inter', sans-serif;
+            transition: transform .2s, box-shadow .2s, opacity .2s;
+            box-shadow: 0 4px 15px rgba(232,106,51,.35);
+            opacity: .4; pointer-events: none;
+        }
+        .welcome-btn.active { opacity: 1; pointer-events: auto; }
+        .welcome-btn.active:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(232,106,51,.45); }
+
         /* ---- PRINT STYLES ---- */
         @media print {
-            .site-header, .progress-bar, .hero .cta { display: none; }
+            .site-header, .progress-bar, .hero .cta, .welcome-screen { display: none; }
             .hero { min-height: auto; padding: 2rem 0; }
             .fade-in { opacity: 1; transform: none; }
             .section { padding: 2rem 0; }
@@ -314,6 +352,17 @@
     </style>
 </head>
 <body>
+
+<!-- Welcome screen -->
+<div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-inner">
+        <h1>Welkom bij <em>vibecoding</em></h1>
+        <p>Deze handleiding is speciaal voor jou. Hoe heet je?</p>
+        <input type="text" id="nameInput" placeholder="Typ je naam..." autocomplete="off" autofocus>
+        <br>
+        <button class="welcome-btn" id="startBtn" onclick="startGuide()">Laten we beginnen!</button>
+    </div>
+</div>
 
 <!-- Progress bar -->
 <div class="progress-bar" id="progressBar"></div>
@@ -339,7 +388,7 @@
     <div class="hero-inner fade-in">
         <h1>Welkom in de wereld van <em>vibecoding</em></h1>
         <p class="subtitle">Van idee naar werkende website &mdash; zonder ook maar &eacute;&eacute;n regel code te kennen.</p>
-        <p class="personal">Speciaal voor jou, Michiel.</p>
+        <p class="personal">Speciaal voor jou, <span class="user-name">vriend</span>.</p>
         <a href="#sectie-1" class="cta">Laten we beginnen &darr;</a>
     </div>
 </div>
@@ -374,7 +423,7 @@
     <div class="section-number">2</div>
     <h2>Wat heb je nodig? (Setup)</h2>
 
-    <p>Voordat we aan de slag gaan, moeten we een paar dingen installeren. Geen paniek, Michiel &mdash; ik loop elke stap met je door!</p>
+    <p>Voordat we aan de slag gaan, moeten we een paar dingen installeren. Geen paniek, <span class="user-name">vriend</span> &mdash; ik loop elke stap met je door!</p>
 
     <!-- Stap 1 -->
     <div class="step-card">
@@ -509,7 +558,7 @@
 in je browser (dubbelklik op het bestand).</span></pre>
     </div>
 
-    <p><strong>Dat is het!</strong> Open het bestand in je browser en je ziet je eerste webpagina. Michiel, je bent officieel een vibecoder!</p>
+    <p><strong>Dat is het!</strong> Open het bestand in je browser en je ziet je eerste webpagina. <span class="user-name">Vriend</span>, je bent officieel een vibecoder!</p>
 
     <h3>Referentiemateriaal gebruiken</h3>
     <p>Heb je bestanden in je werkmap gezet? Claude kan ze gebruiken! Zeg bijvoorbeeld:</p>
@@ -553,10 +602,20 @@ in je browser (dubbelklik op het bestand).</span></pre>
     <div class="section-number">4</div>
     <h2>Superpowers &mdash; Brainstormen met Claude</h2>
 
-    <p>Dit is de kern van deze handleiding, Michiel. <strong>Superpowers</strong> zijn slimme werkwijzen die Claude extra gestructureerd laten werken. In plaats van zomaar code te laten schrijven, laat je Claude eerst meedenken over je idee.</p>
+    <p>Dit is de kern van deze handleiding, <span class="user-name">vriend</span>. <strong>Superpowers</strong> zijn slimme werkwijzen die Claude extra gestructureerd laten werken. In plaats van zomaar code te laten schrijven, laat je Claude eerst meedenken over je idee.</p>
+
+    <h3>Superpowers installeren (eenmalig)</h3>
+    <p>Superpowers zitten niet standaard in Claude &mdash; je installeert ze via de marketplace. Dat doe je &eacute;&eacute;n keer:</p>
+
+    <div class="code-block">
+        <div class="code-block-header"><span>Claude Code</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
+        <pre><span class="prompt">&gt;</span> <span class="highlight-line">/market</span></pre>
+    </div>
+
+    <p>Er opent een overzicht van beschikbare uitbreidingen. Zoek naar <strong>superpowers</strong> en installeer het. Klaar! Dit hoef je maar &eacute;&eacute;n keer te doen.</p>
 
     <h3>De brainstorm starten</h3>
-    <p>Typ het volgende, gevolgd door je idee in gewone taal:</p>
+    <p>Nu kun je brainstormen. Typ het volgende, gevolgd door je idee in gewone taal:</p>
 
     <div class="code-block">
         <div class="code-block-header"><span>Claude Code</span><button class="copy-btn" onclick="copyCode(this)">kopieer</button></div>
@@ -669,7 +728,7 @@ om het resultaat te bekijken.</span></pre>
 
     <div class="code-block">
         <div class="code-block-header"><span>Jouw website-adres</span></div>
-        <pre><span class="highlight-line">michielkamma.github.io/mijn-recepten</span></pre>
+        <pre><span class="highlight-line"><span class="user-name-lower">jouwgebruikersnaam</span>.github.io/mijn-recepten</span></pre>
     </div>
 
     <p>Dat adres kun je delen met iedereen &mdash; familie, vrienden, collega's.</p>
@@ -711,7 +770,7 @@ om het resultaat te bekijken.</span></pre>
     <div class="section-number">7</div>
     <h2>En nu zelf &mdash; Cheatsheet</h2>
 
-    <p>Je weet nu alles wat je nodig hebt, Michiel! Hier is je spiekbriefje voor als je aan de slag gaat:</p>
+    <p>Je weet nu alles wat je nodig hebt, <span class="user-name">vriend</span>! Hier is je spiekbriefje voor als je aan de slag gaat:</p>
 
     <div class="cheatsheet">
         <div class="cheat-columns">
@@ -719,6 +778,7 @@ om het resultaat te bekijken.</span></pre>
                 <h4>Eenmalig (heb je al gedaan)</h4>
                 <div class="cheat-item">Claude Code ge&iuml;nstalleerd + tokens gekocht</div>
                 <div class="cheat-item">GitHub account aangemaakt</div>
+                <div class="cheat-item">Superpowers geïnstalleerd via <code>/market</code></div>
             </div>
             <div class="cheat-col">
                 <h4>Elk nieuw project</h4>
@@ -752,7 +812,7 @@ om het resultaat te bekijken.</span></pre>
     </div>
 
     <div class="highlight teal" style="text-align:center; font-size:1.1rem; margin-top:2rem;">
-        <strong>Veel plezier met vibecoden, Michiel!</strong><br>
+        <strong>Veel plezier met vibecoden, <span class="user-name">vriend</span>!</strong><br>
         Je eerste website is slechts een <code>claude</code>-commando verwijderd.
     </div>
 </section>
@@ -763,6 +823,53 @@ om het resultaat te bekijken.</span></pre>
 </footer>
 
 <script>
+    // ---- WELCOME SCREEN ----
+    var nameInput = document.getElementById('nameInput');
+    var startBtn = document.getElementById('startBtn');
+
+    nameInput.addEventListener('input', function() {
+        startBtn.classList.toggle('active', nameInput.value.trim().length > 0);
+    });
+    nameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && nameInput.value.trim()) startGuide();
+    });
+
+    function startGuide() {
+        var name = nameInput.value.trim();
+        if (!name) return;
+        // Capitalize first letter
+        var displayName = name.charAt(0).toUpperCase() + name.slice(1);
+        var lowerName = name.toLowerCase().replace(/\s+/g, '');
+
+        document.querySelectorAll('.user-name').forEach(function(el) {
+            el.textContent = displayName;
+        });
+        document.querySelectorAll('.user-name-lower').forEach(function(el) {
+            el.textContent = lowerName;
+        });
+
+        // Update page title
+        document.title = 'Vibecoding voor ' + displayName + ' — Een beginnersgids';
+
+        // Save name for return visits
+        try { localStorage.setItem('vibecoding-name', name); } catch(e) {}
+
+        // Hide welcome screen
+        document.getElementById('welcomeScreen').classList.add('hidden');
+        setTimeout(function() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+        }, 500);
+    }
+
+    // Check for returning visitor
+    try {
+        var savedName = localStorage.getItem('vibecoding-name');
+        if (savedName) {
+            nameInput.value = savedName;
+            startBtn.classList.add('active');
+        }
+    } catch(e) {}
+
     // ---- PROGRESS BAR ----
     const progressBar = document.getElementById('progressBar');
     const header = document.getElementById('siteHeader');
